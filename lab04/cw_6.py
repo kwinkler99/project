@@ -1,4 +1,4 @@
-n =str(input("Podaj pierwsze słowo: "))
+n=str(input("Podaj pierwsze słowo: "))
 m=str(input("Podaj drugie słowo: "))
 x=0
 c=str('')
