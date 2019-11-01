@@ -1,18 +1,20 @@
 n = str(input("Podaj słowo: "))
 x = len(n)-1
 z = int(x/2)
-y = 0
+w = 0
+c=''
+y=''
 for i in n:
-    if i != n[z]:
-        if i == n[x]:
-            y=1
-            x-=1
-        else:
-            x-=1
-            y=0
+    if w <= z:
+        c+=n[x]
+        y+=i
+        x-=1
     else:
         break;
+    w+=1
 
 
-if y == 1:
+if y == c:
     print("Slowo jest palindromem")
+elif y != c:
+    print("Slowo nie jest palindromem")
