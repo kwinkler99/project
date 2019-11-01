@@ -5,7 +5,7 @@ v = 0
 y=0
 c=''
 z = 0
-for j in range(len(n)-1):
+for j in range(len(n)):
     for i in n:
         if v < len(m):
             c += i
