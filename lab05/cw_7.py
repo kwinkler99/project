@@ -6,11 +6,11 @@ listam=[]
 c=''
 
 for i in range(n):
-    x = str(input("Podaj do tablicy 1: "))
+    x = str(input("Podaj element do listy 1: "))
     listan.append(x)
 
 for j in range(m):
-    y = str(input("Podaj do tablicy 2: "))
+    y = str(input("Podaj element do tablicy 2: "))
     listam.append(y)
 
 for i in range(n):
@@ -22,4 +22,7 @@ for i in range(n):
 
 print("Lista pierwsza to: ", listan)
 print("Lista druga to: ", listam)
-print("CZESCIA WSPOLNA TABLIC JEST: ", c)
+if c == '':
+    print("Nie ma czesci wspolnej")
+else:
+    print("CZESCIA WSPOLNA TABLIC JEST: ", c)

@@ -2,7 +2,7 @@ n=int(input("Podaj liczbe: "))
 lista=[]
 
 for i in range(n):
-    m=int(input("Podaj liczbe m: "))
+    m=float(input("Podaj liczbe m: "))
     lista.append(m)
 
 b=lista[0]
