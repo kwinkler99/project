@@ -1,10 +1,14 @@
 tablica=[]
 x=[]
 y=0
-z=0
-w=0
-a=0
-b=0
+dl1=0
+tab1=0
+tab2=0
+dl2=0
+m=0
+m1=0
+mx=0
+m1x=0
 c = int(input("Jesli chcesz zakonczyc robienie tabeli wpisz 0"'\n'"Podaj liczbe ktora mam dodac do listy: "))
 while c!=0:
     while c!=0:
@@ -16,19 +20,26 @@ while c!=0:
     y+=1
 
 for h in range(y):
-    z=len(x[h])
-    for g in range(z):
-        w+=x[h][g]
-        if h+1<y:
-            b = len(x[(h + 1)])
-            for n in range(b):
-                a+=x[(h+1)][n]
+    dl1=len(x[h])
+    for g in range(dl1):
+        tab1+=x[h][g]
+    if h+1<y:
+        dl2 = len(x[(h + 1)])
+        for n in range(dl2):
+            tab2+=x[(h+1)][n]
     if h + 1 < y:
-        if a>w:
-            w=0
-            b=h+1
+        if h==0 and tab1>tab2:
+            m=h
+            mx=tab1
+        if tab2>tab1:
+            tab2=0
+            tab1=0
+            m1=h+1
+            m1x=tab2
         else:
-            a=0
-            b=h
-
-print(x[b])
+            tab2=0
+            tab1=0
+if mx>m1x:
+    print(x[m])
+else:
+    print(x[m1])
