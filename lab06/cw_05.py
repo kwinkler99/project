@@ -32,10 +32,10 @@ for h in range(y):
             m=h
             mx=tab1
         if tab2>tab1:
+            m1x=tab2
             tab2=0
             tab1=0
             m1=h+1
-            m1x=tab2
         else:
             tab2=0
             tab1=0
