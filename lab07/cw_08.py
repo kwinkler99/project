@@ -9,7 +9,7 @@ def number(a):
         else:
             return True
     else:
-        if a == 1 or a == 2 or a == 3 or a == 7:
+        if a == 5 or a == 2 or a == 3 or a == 7:
             return True
         else:
             return False
