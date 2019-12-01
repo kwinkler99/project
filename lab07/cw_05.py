@@ -1,9 +1,14 @@
 import random
 def funkcja (argument_n, z1,z2):
     tablica=[]
-    for i in range(argument_n):
-        tablica.append(random.randint(z1,z2))
-    return tablica
+    if z1<z2:
+        for i in range(argument_n):
+            tablica.append(random.randint(z1,z2))
+        return tablica
+    if z2<z1:
+        for i in range(argument_n):
+            tablica.append(random.randint(z2,z1))
+        return tablica
 
 
 
