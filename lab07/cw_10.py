@@ -1,14 +1,17 @@
 def czyszczenie(tablica):
     x=0
-    y=0
+    y=1
     for i in tablica:
         for j in tablica:
-            if y+1<len(tablica):
-                if tablica[x] == tablica[y+1] and x != y+1:
-                    tablica.pop(y+1)
+            if y<len(tablica):
+                if i == j and x != y:
+                    tablica.pop(y)
+                    y-=1
                 y+=1
         x+=1
-        y=0
+        y=1
+    if tablica[0] == tablica[len(tablica) - 1]:
+        tablica.pop(len(tablica) - 1)
 
 
 
