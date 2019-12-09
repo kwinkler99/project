@@ -1,5 +1,11 @@
-def prawdo(n, k):
-   if n == 1: return 1/2
-   else: return prawdo(n-1, k)*1/2
+def moneta(n,k):
+   if n == 0:
+      if k ==0: return 1
+      else: return 0
+   else: return(
+      1/2*moneta(n-1,k)+ 1/2*moneta(n-1, k-1))
 
-print(prawdo(3,2))
+
+
+print(moneta(3,2))
+   
