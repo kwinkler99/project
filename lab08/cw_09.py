@@ -8,4 +8,3 @@ def moneta(n,k):
 
 
 print(moneta(3,2))
-   
