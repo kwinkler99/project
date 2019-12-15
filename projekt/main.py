@@ -8,6 +8,7 @@ def DrawBoard(x, y, height, screen, color, line):
    pygame.draw.lines(screen, color, False, [(x,height), (y,height)], line)
 
 
+
 def main():
    # color
    white = (255, 255, 255)
@@ -56,7 +57,7 @@ def main():
 
    #safe first block to the list
    for j in range(0,3,1):
-      for n, i in enumerate(lista_main[j]):
+      for n in range(len(lista_main[j])):
          if (y == 100 and j == 0) or (y == 200 and j == 1) or (y == 300 and j == 2):
             if y == 100 and j == 0:
                if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
@@ -72,17 +73,44 @@ def main():
    #PLAY UNTIL EXIT
    while True:
       screen.blit(text_render, (width/3, (height-50)/9))
+
+
       for event in pygame.event.get():
          if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             sys.exit()
          if event.type == KEYDOWN:
+            if event.key == pygame.K_DOWN:
+               for i in range(3):
+                  for j in range(2, -1, -1):
+                     if not lista_main[j][i]:
+                        for k in range(j - 1, -1, -1):
+                           if lista_main[k][i]:
+                              lista_main[j][i] = lista_main[k][i]
+                              lista_main[k][i] = 0
+                              break;
+               ## zlaczenie klockow
+               for i in range(3):
+                  for j in range(2, -1, -1):
+                     if (lista_main[j][i] and lista_main[j][i] == lista_main[j - 1][i]):
+                        lista_main[j][i] += lista_main[j - 1][i]
+                        lista_main[j - 1][i] = 0
+               ## ponowne dosuniecie klockow
+               for i in range(3):
+                  for j in range(2, -1, -1):
+                     if not lista_main[j][i]:
+                        for k in range(j - 1, -1, -1):
+                           if lista_main[k][i]:
+                              lista_main[j][i] = lista_main[k][i]
+                              lista_main[k][i] = 0
+                              break;
+
             #creating new blocks
             if event.key == pygame.K_LEFT or  event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP:
                while exit == 0:
                   x = random.choice([0, 100, 200])
                   y = random.choice([100, 200, 300])
                   for j in range(0, 3, 1):
-                     for n, i in enumerate(lista_main[j]):
+                     for n in range(len(lista_main)):
                         if lista_main[j][n] == 0:
                            if (y == 100 and j == 0) or (y == 200 and j == 1) or (y == 300 and j == 2):
                               if y == 100 and j == 0:
@@ -100,34 +128,62 @@ def main():
                exit = 0
 
 
+         # loading images
+         for i in range(0, 3, 1):
+            for j in range(0, 3, 1):
+               if i == 0 and j == 0:
+                  x = 0
+                  y = 100
+               elif i == 0 and j == 1:
+                  x = 100
+                  y = 100
+               elif i == 0 and j == 2:
+                  x = 200
+                  y = 100
 
+               elif i == 1 and j == 0:
+                  x = 0
+                  y = 200
+               elif i == 1 and j == 1:
+                  x = 100
+                  y = 200
+               elif i == 1 and j == 2:
+                  x = 200
+                  y = 200
 
-   #loading images
-      for i in range(0, 3, 1):
-         for j in range(0, 3, 1):
-            if lista_main[i][j] == 2:
-               screen.blit(image_2,(x,y))
-            if lista_main[i][j] == 4:
-               screen.blit(image_4,(x,y))
-            if lista_main[i][j] == 8:
-               screen.blit(image_8,(x,y))
-            if lista_main[i][j] == 16:
-               screen.blit(image_16,(x,y))
-            if lista_main[i][j] == 32:
-               screen.blit(image_32,(x,y))
-            if lista_main[i][j] == 64:
-               screen.blit(image_64,(x,y))
-            if lista_main[i][j] == 128:
-               screen.blit(image_128,(x,y))
-            if lista_main[i][j] == 256:
-               screen.blit(image_256,(x,y))
-            if lista_main[i][j] == 512:
-               screen.blit(image_512,(x,y))
-            if lista_main[i][j] == 1024:
-               screen.blit(image_1024,(x,y))
-            if lista_main[i][j] == 2048:
-               screen.blit(image_2048,(x,y))
-      pygame.display.update()
+               elif i == 2 and j == 0:
+                  x = 0
+                  y = 300
+               elif i == 2 and j == 1:
+                  x = 100
+                  y = 300
+               elif i == 2 and j == 2:
+                  x = 200
+                  y = 300
+
+               if lista_main[i][j] == 2:
+                  screen.blit(image_2, (x, y))
+               if lista_main[i][j] == 4:
+                  screen.blit(image_4, (x, y))
+               if lista_main[i][j] == 8:
+                  screen.blit(image_8, (x, y))
+               if lista_main[i][j] == 16:
+                  screen.blit(image_16, (x, y))
+               if lista_main[i][j] == 32:
+                  screen.blit(image_32, (x, y))
+               if lista_main[i][j] == 64:
+                  screen.blit(image_64, (x, y))
+               if lista_main[i][j] == 128:
+                  screen.blit(image_128, (x, y))
+               if lista_main[i][j] == 256:
+                  screen.blit(image_256, (x, y))
+               if lista_main[i][j] == 512:
+                  screen.blit(image_512, (x, y))
+               if lista_main[i][j] == 1024:
+                  screen.blit(image_1024, (x, y))
+               if lista_main[i][j] == 2048:
+                  screen.blit(image_2048, (x, y))
+         pygame.display.update()
 
 #call function
 main()
