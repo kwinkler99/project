@@ -8,13 +8,11 @@ def DrawBoard(x, y, height, screen, color, line):
    pygame.draw.lines(screen, color, False, [(x,height), (y,height)], line)
 
 
-
 def main():
    # color
    white = (255, 255, 255)
    grey = (0x99, 0x99, 0x99)
    black = (0x00, 0x00, 0x00)
-   red = (255, 0, 0)
 
    # useful data
    (width, height) = (300, 400)
@@ -74,12 +72,102 @@ def main():
    while True:
       screen.blit(text_render, (width/3, (height-50)/9))
 
-
       for event in pygame.event.get():
          if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             sys.exit()
          if event.type == KEYDOWN:
+            if event.key ==pygame.K_RIGHT:
+
+               ##ARROW - RIGHT
+
+               ##moving blocks
+               for i in range(3):
+                  for j in range(2, -1, -1):
+                     if not lista_main[i][j]:
+                        for k in range(j-1, -1, -1):
+                           if lista_main[i][k]:
+                              lista_main[i][j] = lista_main[i][k]
+                              lista_main[i][k] = 0
+                              break
+               ##join blocks
+               for i in range(3):
+                  for j in range(2, 0, -1):
+                     if lista_main[i][j] and lista_main[i][j] == lista_main[i][j-1]:
+                        lista_main[i][j] += lista_main[i][j-1]
+                        lista_main[i][j-1] = 0
+               ##repeat moving blocks
+               for i in range(3):
+                  for j in range(2, -1, -1):
+                     if not lista_main[i][j]:
+                        for k in range(j-1, -1, -1):
+                           if lista_main[i][k]:
+                              lista_main[i][j] = lista_main[i][k]
+                              lista_main[i][k] = 0
+                              break
+
+            if event.key == pygame.K_LEFT:
+
+               ##ARROW - LEFT
+
+               ##moving blocks
+               for i in range(3):
+                  for j in range(3):
+                     if not lista_main[i][j]:
+                        for k in range(j+1,3):
+                           if lista_main[i][k]:
+                              lista_main[i][j] = lista_main[i][k]
+                              lista_main[i][k] = 0
+                              break
+               ##join blocks
+               for i in range(3):
+                  for j in range(2):
+                     if lista_main[i][j] and lista_main[i][j] == lista_main[i][j+1]:
+                        lista_main[i][j] += lista_main[i][j+1]
+                        lista_main[i][j+1] = 0
+               ##repeat moving blocks
+               for i in range(3):
+                  for j in range(3):
+                     if not lista_main[i][j]:
+                        for k in range(j+1,3):
+                           if lista_main[i][k]:
+                              lista_main[i][j] = lista_main[i][k]
+                              lista_main[i][k] = 0
+                              break
+
+            if event.key == pygame.K_UP:
+
+               ##ARROW - UP
+
+               ##moving blocks
+               for i in range(3):
+                  for j in range(3):
+                     if not lista_main[j][i]:
+                        for k in range(j+1, 3):
+                           if lista_main[k][i]:
+                              lista_main[j][i] = lista_main[k][i]
+                              lista_main[k][i] = 0
+                              break
+               ##join blocks
+               for i in range(3):
+                  for j in range(2):
+                     if lista_main[j][i] and lista_main[j][i] == lista_main[j+1][i]:
+                        lista_main[j][i] += lista_main[j+1][i]
+                        lista_main[j+1][i] = 0
+               ##repeat moving blocks
+               for i in range(3):
+                  for j in range(3):
+                     if not lista_main[j][i]:
+                        for k in range(j + 1, 3):
+                           if lista_main[k][i]:
+                              lista_main[j][i] = lista_main[k][i]
+                              lista_main[k][i] = 0
+                              break
+
             if event.key == pygame.K_DOWN:
+
+               ##ARROW - DOWN
+
+               ##moving blocks
                for i in range(3):
                   for j in range(2, -1, -1):
                      if not lista_main[j][i]:
@@ -87,14 +175,14 @@ def main():
                            if lista_main[k][i]:
                               lista_main[j][i] = lista_main[k][i]
                               lista_main[k][i] = 0
-                              break;
-               ## zlaczenie klockow
+                              break
+               ##join blocks
                for i in range(3):
                   for j in range(2, -1, -1):
                      if (lista_main[j][i] and lista_main[j][i] == lista_main[j - 1][i]):
                         lista_main[j][i] += lista_main[j - 1][i]
                         lista_main[j - 1][i] = 0
-               ## ponowne dosuniecie klockow
+               ##repeat moving blocks
                for i in range(3):
                   for j in range(2, -1, -1):
                      if not lista_main[j][i]:
@@ -125,8 +213,12 @@ def main():
                                  if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
                                     lista_main[j][n] = 2
                                     exit = 1
-               exit = 0
 
+               ## reset screen and loading again
+               screen.fill(grey)
+               DrawBoard(0, width, 0, screen, black, 199)
+
+               exit = 0
 
          # loading images
          for i in range(0, 3, 1):
@@ -183,7 +275,8 @@ def main():
                   screen.blit(image_1024, (x, y))
                if lista_main[i][j] == 2048:
                   screen.blit(image_2048, (x, y))
-         pygame.display.update()
+
+      pygame.display.update()
 
 #call function
 main()
