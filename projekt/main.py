@@ -99,8 +99,12 @@ def main():
    pygame.display.set_caption("Gra 2048")
    screen.fill(grey)
    DrawBoard(0, width, 0, screen, black, 199)
-   font_size=pygame.font.SysFont("dejavusans", 20)
+   font_size = pygame.font.SysFont("dejavusans", 20)
+   font_size1 = pygame.font.SysFont('arial',18)
    text_render = font_size.render(text, 1, (250, 250, 250), None)
+   text_map = font_size1.render("u - cofnięcie ruchu", 1, (250, 250, 250), None)
+   text_time = font_size1.render("Czas: ", 1, (250, 250, 250), None)
+   text_score = font_size1.render("Punktacja: ", 1, (250, 250, 250), None)
 
    #loading images
    image_2 = pygame.image.load(os.path.join("Number", "2.bmp"))
@@ -138,21 +142,31 @@ def main():
 
    #PLAY UNTIL EXIT
    while True:
-      screen.blit(text_render, (width/3, (height-50)/9))
+      screen.blit(text_render, (width/3, 10))
+      screen.blit(text_map, (10, 40))
+      screen.blit(text_score, (10, 60))
+      screen.blit(text_time, (10, 80))
+
+
 
 
       for event in pygame.event.get():
          if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             sys.exit()
          if event.type == KEYDOWN:
-            safe = []
-            for i in range(3):
-               for j in range(3):
-                  copy.append(lista_main[i][j])
-               safe += [copy]
-               copy = []
+            if event.key != pygame.K_u:
+               safe = []
+               for i in range(3):
+                  for j in range(3):
+                     copy.append(lista_main[i][j])
+                  safe += [copy]
+                  copy = []
          if event.type == KEYUP:
-            if event.key ==pygame.K_RIGHT:
+            if event.key == pygame.K_u:
+               lista_main = safe
+               screen.fill(grey)
+               DrawBoard(0, width, 0, screen, black, 199)
+            if event.key == pygame.K_RIGHT:
 
                ##ARROW - RIGHT
 
@@ -222,7 +236,7 @@ def main():
                         lista_main[j - 1][i] = 0
                         move = 1
             ##repeat moving blocks
-               arrow_down
+               arrow_down(lista_main)
 
             #creating new blocks
             if (event.key == pygame.K_LEFT or  event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
