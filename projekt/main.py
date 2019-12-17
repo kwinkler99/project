@@ -7,7 +7,7 @@ from pygame.locals import *
 def DrawBoard(x, y, height, screen, color, line):
    pygame.draw.lines(screen, color, False, [(x,height), (y,height)], line)
 
-##function ending gre
+##function ending game
 def END(screen, image, lista):
    help = 0
    n = 0
@@ -28,6 +28,7 @@ def END(screen, image, lista):
       if help == 8:
          return screen.blit(image, (1,100))
 
+##ARROW
 def arrow_up(lista):
    for i in range(3):
       for j in range(3):
@@ -71,7 +72,42 @@ def arrow_left(lista):
                   lista[i][k] = 0
                   break
    return lista
+############################
+def checking_position(i, j):
+   if i == 0 and j == 0:
+      x = 0
+      y = 100
+   elif i == 0 and j == 1:
+      x = 100
+      y = 100
+   elif i == 0 and j == 2:
+      x = 200
+      y = 100
 
+   elif i == 1 and j == 0:
+      x = 0
+      y = 200
+   elif i == 1 and j == 1:
+      x = 100
+      y = 200
+   elif i == 1 and j == 2:
+      x = 200
+      y = 200
+
+   elif i == 2 and j == 0:
+      x = 0
+      y = 300
+   elif i == 2 and j == 1:
+      x = 100
+      y = 300
+   elif i == 2 and j == 2:
+      x = 200
+      y = 300
+   return (x,y)
+
+
+
+##GAME
 def main():
    # color
    grey = (0x99, 0x99, 0x99)
@@ -271,58 +307,30 @@ def main():
             # loading images
          for i in range(0, 3, 1):
             for j in range(0, 3, 1):
-               if i == 0 and j == 0:
-                  x = 0
-                  y = 100
-               elif i == 0 and j == 1:
-                  x = 100
-                  y = 100
-               elif i == 0 and j == 2:
-                  x = 200
-                  y = 100
-
-               elif i == 1 and j == 0:
-                  x = 0
-                  y = 200
-               elif i == 1 and j == 1:
-                  x = 100
-                  y = 200
-               elif i == 1 and j == 2:
-                  x = 200
-                  y = 200
-
-               elif i == 2 and j == 0:
-                  x = 0
-                  y = 300
-               elif i == 2 and j == 1:
-                  x = 100
-                  y = 300
-               elif i == 2 and j == 2:
-                  x = 200
-                  y = 300
+               position = checking_position(i,j)
 
                if lista_main[i][j] == 2:
-                  screen.blit(image_2, (x, y))
+                  screen.blit(image_2, position)
                if lista_main[i][j] == 4:
-                  screen.blit(image_4, (x, y))
+                  screen.blit(image_4, position)
                if lista_main[i][j] == 8:
-                  screen.blit(image_8, (x, y))
+                  screen.blit(image_8, position)
                if lista_main[i][j] == 16:
-                  screen.blit(image_16, (x, y))
+                  screen.blit(image_16, position)
                if lista_main[i][j] == 32:
-                  screen.blit(image_32, (x, y))
+                  screen.blit(image_32, position)
                if lista_main[i][j] == 64:
-                  screen.blit(image_64, (x, y))
+                  screen.blit(image_64, position)
                if lista_main[i][j] == 128:
-                  screen.blit(image_128, (x, y))
+                  screen.blit(image_128, position)
                if lista_main[i][j] == 256:
-                  screen.blit(image_256, (x, y))
+                  screen.blit(image_256, position)
                if lista_main[i][j] == 512:
-                  screen.blit(image_512, (x, y))
+                  screen.blit(image_512, position)
                if lista_main[i][j] == 1024:
-                  screen.blit(image_1024, (x, y))
+                  screen.blit(image_1024, position)
                if lista_main[i][j] == 2048:
-                  screen.blit(image_2048, (x, y))
+                  screen.blit(image_2048, position)
                   screen.blit(image_win,(0,100))
 
          END(screen, image_lose, lista_main)
