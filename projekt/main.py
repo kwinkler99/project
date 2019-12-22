@@ -4,6 +4,7 @@ import os.path
 from pygame.locals import *
 
 
+
 def DrawBoard(x, y, height, screen, color, line):
    pygame.draw.lines(screen, color, False, [(x,height), (y,height)], line)
 
@@ -113,8 +114,13 @@ def score(screen, points):
 
 def time(screen):
    font = pygame.font.SysFont('arial',18)
-   time = font.render(str(pygame.time.get_ticks()//1000), 1, (250, 250, 250))
-   screen.blit(time, (80, 80))
+   if (pygame.time.get_ticks()//1000)%60 < 10:
+      time = font.render(str((pygame.time.get_ticks()//1000)//60) + ':' + '0' + str((pygame.time.get_ticks()//1000)%60), 1, (250, 250, 250))
+   else:
+      time = font.render(str((pygame.time.get_ticks()//1000)//60) + ':' + str((pygame.time.get_ticks() // 1000) % 60), 1,(250, 250, 250))
+   screen.blit(time, (70, 80))
+
+
 
 ##GAME
 def main():
@@ -196,7 +202,9 @@ def main():
       screen.blit(text_map, (10, 40))
       screen.blit(text_score, (10, 60))
       screen.blit(text_time, (10, 80))
+      score(screen, points)
       time(screen)
+
 
       for event in pygame.event.get():
          if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -353,7 +361,6 @@ def main():
                   screen.blit(image_2048, position)
                   screen.blit(image_win,(0,100))
 
-         score(screen, points)
          END(screen, image_lose, lista_main)
 
 
