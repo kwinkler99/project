@@ -72,6 +72,7 @@ def arrow_left(lista):
                   lista[i][k] = 0
                   break
    return lista
+
 ############################
 def checking_position(i, j):
    if i == 0 and j == 0:
@@ -106,6 +107,10 @@ def checking_position(i, j):
    return (x,y)
 
 
+def score(screen, points):
+   font_size1 = pygame.font.SysFont('arial.ttf',25)
+   screen.blit(font_size1.render(points,True,(255,255,255)), (110, 63))
+
 
 ##GAME
 def main():
@@ -123,6 +128,8 @@ def main():
    move = 0
    copy = []
    safe = []
+   points = 0
+   points1 = str(points)
 
    # text
    text = 'Gra 2048'
@@ -141,6 +148,8 @@ def main():
    text_map = font_size1.render("u - cofnięcie ruchu", 1, (250, 250, 250), None)
    text_time = font_size1.render("Czas: ", 1, (250, 250, 250), None)
    text_score = font_size1.render("Punktacja: ", 1, (250, 250, 250), None)
+
+
 
    #loading images
    image_2 = pygame.image.load(os.path.join("Number", "2.bmp"))
@@ -183,9 +192,6 @@ def main():
       screen.blit(text_score, (10, 60))
       screen.blit(text_time, (10, 80))
 
-
-
-
       for event in pygame.event.get():
          if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             sys.exit()
@@ -197,8 +203,9 @@ def main():
                      copy.append(lista_main[i][j])
                   safe += [copy]
                   copy = []
+            undo = 0
          if event.type == KEYUP:
-            if event.key == pygame.K_u:
+            if event.key == pygame.K_u and safe != []:
                lista_main = safe
                screen.fill(grey)
                DrawBoard(0, width, 0, screen, black, 199)
@@ -216,6 +223,8 @@ def main():
                      if lista_main[i][j] != 0 and lista_main[i][j] == lista_main[i][j-1]:
                         lista_main[i][j] += lista_main[i][j-1]
                         lista_main[i][j-1] = 0
+                        points += lista_main[i][j]
+                        points1 = str(points)
                         move = 1
             ##repeat moving blocks
                arrow_right(lista_main)
@@ -234,6 +243,8 @@ def main():
                      if lista_main[i][j] != 0 and lista_main[i][j] == lista_main[i][j+1]:
                         lista_main[i][j] += lista_main[i][j+1]
                         lista_main[i][j+1] = 0
+                        points += lista_main[i][j]
+                        points1 = str(points)
                         move = 1
             ##repeat moving blocks
                arrow_left(lista_main)
@@ -252,6 +263,8 @@ def main():
                      if lista_main[j][i] != 0 and lista_main[j][i] == lista_main[j+1][i]:
                         lista_main[j][i] += lista_main[j+1][i]
                         lista_main[j+1][i] = 0
+                        points += lista_main[i][j]
+                        points1 = str(points)
                         move = 1
             ##repeat moving blocks
                arrow_up(lista_main)
@@ -270,12 +283,15 @@ def main():
                      if (lista_main[j][i] != 0 and lista_main[j][i] == lista_main[j - 1][i]):
                         lista_main[j][i] += lista_main[j - 1][i]
                         lista_main[j - 1][i] = 0
+                        points += lista_main[i][j]
+                        points1 = str(points)
                         move = 1
             ##repeat moving blocks
                arrow_down(lista_main)
 
             #creating new blocks
             if (event.key == pygame.K_LEFT or  event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
+
                while exit == 0:
                   x = random.choice([0, 100, 200])
                   y = random.choice([100, 200, 300])
@@ -332,7 +348,7 @@ def main():
                if lista_main[i][j] == 2048:
                   screen.blit(image_2048, position)
                   screen.blit(image_win,(0,100))
-
+         score(screen, points1)
          END(screen, image_lose, lista_main)
 
       pygame.display.update()
