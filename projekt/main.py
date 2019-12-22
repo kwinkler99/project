@@ -127,6 +127,7 @@ def main():
    exit = 0
    move = 0
    copy = []
+   copy_score = ''
    safe = []
    points = 0
    points1 = str(points)
@@ -203,10 +204,12 @@ def main():
                      copy.append(lista_main[i][j])
                   safe += [copy]
                   copy = []
-            undo = 0
+               copy_score = points
          if event.type == KEYUP:
             if event.key == pygame.K_u and safe != []:
                lista_main = safe
+               points = copy_score
+               points1 = str(points)
                screen.fill(grey)
                DrawBoard(0, width, 0, screen, black, 199)
             if event.key == pygame.K_RIGHT:
@@ -263,7 +266,7 @@ def main():
                      if lista_main[j][i] != 0 and lista_main[j][i] == lista_main[j+1][i]:
                         lista_main[j][i] += lista_main[j+1][i]
                         lista_main[j+1][i] = 0
-                        points += lista_main[i][j]
+                        points += lista_main[j][i]
                         points1 = str(points)
                         move = 1
             ##repeat moving blocks
@@ -283,7 +286,7 @@ def main():
                      if (lista_main[j][i] != 0 and lista_main[j][i] == lista_main[j - 1][i]):
                         lista_main[j][i] += lista_main[j - 1][i]
                         lista_main[j - 1][i] = 0
-                        points += lista_main[i][j]
+                        points += lista_main[j][i]
                         points1 = str(points)
                         move = 1
             ##repeat moving blocks
