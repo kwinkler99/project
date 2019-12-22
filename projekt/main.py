@@ -27,7 +27,7 @@ def END(screen, image, lista):
             help += 1
 
       if help == 8:
-         return screen.blit(image, (1,100))
+         return True
 
 ##ARROW
 def arrow_up(lista):
@@ -110,7 +110,7 @@ def checking_position(i, j):
 
 def score(screen, points):
    font = pygame.font.SysFont('arial',18)
-   screen.blit(font.render(str(points),1,(255,255,255)), (110, 60))
+   screen.blit(font.render(str(points),1,(255,255,255)), (100 , 60))
 
 def time(screen):
    font = pygame.font.SysFont('arial',18)
@@ -118,8 +118,7 @@ def time(screen):
       time = font.render(str((pygame.time.get_ticks()//1000)//60) + ':' + '0' + str((pygame.time.get_ticks()//1000)%60), 1, (250, 250, 250))
    else:
       time = font.render(str((pygame.time.get_ticks()//1000)//60) + ':' + str((pygame.time.get_ticks() // 1000) % 60), 1,(250, 250, 250))
-   screen.blit(time, (70, 80))
-
+   screen.blit(time, (60, 80))
 
 
 ##GAME
@@ -328,7 +327,6 @@ def main():
 
                ## reset screen and loading again
                screen.fill(grey)
-               DrawBoard(0, width, 0, screen, black, 199)
                exit = 0
 
 
@@ -361,8 +359,8 @@ def main():
                   screen.blit(image_2048, position)
                   screen.blit(image_win,(0,100))
 
-         END(screen, image_lose, lista_main)
-
+         if END(screen, image_lose, lista_main) == True:
+            screen.blit(image_lose, (1, 100))
 
       pygame.display.update()
 
