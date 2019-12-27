@@ -25,7 +25,7 @@ image_2048 = pygame.image.load(os.path.join("Number", "2048.bmp"))
 image_lose = pygame.image.load(os.path.join("Number", "Przegrales.jpg"))
 image_win = pygame.image.load(os.path.join("Number", "Wygrales.jpg"))
 
-# date
+# data
 FPS = 90
 fpsClock = pygame.time.Clock()
 
@@ -54,6 +54,92 @@ def END(screen, image, lista):
       if help == 8:
          return True
 
+def image(lista_main,screen,i,j):
+
+   position = checking_position(i,j)
+
+   if lista_main[i][j] == 2:
+      screen.blit(image_2, position)
+   if lista_main[i][j] == 4:
+      screen.blit(image_4, position)
+   if lista_main[i][j] == 8:
+      screen.blit(image_8, position)
+   if lista_main[i][j] == 16:
+      screen.blit(image_16, position)
+   if lista_main[i][j] == 32:
+      screen.blit(image_32, position)
+   if lista_main[i][j] == 64:
+      screen.blit(image_64, position)
+   if lista_main[i][j] == 128:
+      screen.blit(image_128, position)
+   if lista_main[i][j] == 256:
+      screen.blit(image_256, position)
+   if lista_main[i][j] == 512:
+      screen.blit(image_512, position)
+   if lista_main[i][j] == 1024:
+      screen.blit(image_1024, position)
+   if lista_main[i][j] == 2048:
+      screen.blit(image_2048, position)
+      screen.blit(image_win, (0, 100))
+
+def image_for_the_arrows(i,k,x,y,screen,lista):
+   if lista[k][i] == 2:
+      screen.blit(image_2, (x, y))
+   if lista[k][i] == 4:
+      screen.blit(image_4, (x, y))
+   if lista[k][i] == 8:
+      screen.blit(image_8, (x, y))
+   if lista[k][i] == 16:
+      screen.blit(image_16, (x, y))
+   if lista[k][i] == 32:
+      screen.blit(image_32, (x, y))
+   if lista[k][i] == 64:
+      screen.blit(image_64, (x, y))
+   if lista[k][i] == 128:
+      screen.blit(image_128, (x, y))
+   if lista[k][i] == 256:
+      screen.blit(image_256, (x, y))
+   if lista[k][i] == 512:
+      screen.blit(image_512, (x, y))
+   if lista[k][i] == 1024:
+      screen.blit(image_1024, (x, y))
+   if lista[k][i] == 2048:
+      screen.blit(image_2048, (x, y))
+      screen.blit(image_win, (0, 100))
+   pygame.display.update()
+   fpsClock.tick(FPS)
+
+def animation_arrow_UP(k,i,j,lista,screen):
+   (x, y) = checking_position(k, i)
+   z = y
+   while y != z - (k - j) * 100:
+      y -= 5
+      image_for_the_arrows(i, k, x, y, screen, lista)
+
+
+def animation_arrow_DOWN(k, i, j, lista, screen):
+   (x, y) = checking_position(k, i)
+   z = y
+   while y != z + (j - k) * 100:
+      y += 5
+      image_for_the_arrows(i, k, x, y, screen, lista)
+
+def animation_arrow_LEFT(k, i, j, lista, screen):
+   (x, y) = checking_position(i, k)
+   z = x
+   while x != z - (k - j) * 100:
+      x -= 5
+      image_for_the_arrows(k, i, x, y, screen, lista)
+
+
+def animation_arrow_RIGHT(k, i, j, lista, screen):
+   (x, y) = checking_position(i, k)
+   z = x
+   while x != z - (k - j) * 100:
+      x += 5
+      image_for_the_arrows(k, i, x, y, screen, lista)
+
+
 ##ARROW
 def arrow_up(lista,screen):
    for i in range(3):
@@ -62,69 +148,43 @@ def arrow_up(lista,screen):
          if lista[j][i] == 0:
             for k in range(j + 1, 3):
                if lista[k][i] != 0:
-                  (x, y) = checking_position(k, i)
-                  z = y
-                  while y != z - 100:
-                     y-=4
-                     if lista[k][i] == 2:
-                        screen.blit(image_2, (x,y))
-                     if lista[k][i] == 4:
-                        screen.blit(image_4, (x,y))
-                     if lista[k][i] == 8:
-                        screen.blit(image_8, (x,y))
-                     if lista[k][i] == 16:
-                        screen.blit(image_16, (x,y))
-                     if lista[k][i] == 32:
-                        screen.blit(image_32, (x,y))
-                     if lista[k][i] == 64:
-                        screen.blit(image_64, (x,y))
-                     if lista[k][i] == 128:
-                        screen.blit(image_128, (x,y))
-                     if lista[k][i] == 256:
-                        screen.blit(image_256, (x,y))
-                     if lista[k][i] == 512:
-                        screen.blit(image_512, (x,y))
-                     if lista[k][i] == 1024:
-                        screen.blit(image_1024, (x,y))
-                     if lista[k][i] == 2048:
-                        screen.blit(image_2048, (x,y))
-                        screen.blit(image_win, (0, 100))
-                     pygame.display.update()
-                     fpsClock.tick(FPS)
-
+                  animation_arrow_UP(k, i, j, lista, screen)
                   lista[j][i] = lista[k][i]
                   lista[k][i] = 0
                   break
    return lista
 
-def arrow_down(lista):
+def arrow_down(lista,screen):
    for i in range(3):
       for j in range(2, -1, -1):
          if lista[j][i] == 0:
             for k in range(j - 1, -1, -1):
                if lista[k][i] != 0:
+                  animation_arrow_DOWN(k, i, j, lista, screen)
                   lista[j][i] = lista[k][i]
                   lista[k][i] = 0
                   break
    return lista
 
-def arrow_right(lista):
+def arrow_right(lista,screen):
    for i in range(3):
       for j in range(2, -1, -1):
          if lista[i][j] == 0:
             for k in range(j - 1, -1, -1):
                if lista[i][k] != 0:
+                  animation_arrow_RIGHT(k, i, j, lista, screen)
                   lista[i][j] = lista[i][k]
                   lista[i][k] = 0
                   break
    return lista
 
-def arrow_left(lista):
+def arrow_left(lista,screen):
    for i in range(3):
       for j in range(3):
          if lista[i][j] == 0:
             for k in range(j + 1, 3):
                if lista[i][k] != 0:
+                  animation_arrow_LEFT(k, i, j, lista, screen)
                   lista[i][j] = lista[i][k]
                   lista[i][k] = 0
                   break
@@ -177,35 +237,6 @@ def time(screen):
 
    screen.blit(time, (60, 80))
 
-def image(lista_main,screen,i,j):
-
-   position = checking_position(i,j)
-
-   if lista_main[i][j] == 2:
-      screen.blit(image_2, position)
-   if lista_main[i][j] == 4:
-      screen.blit(image_4, position)
-   if lista_main[i][j] == 8:
-      screen.blit(image_8, position)
-   if lista_main[i][j] == 16:
-      screen.blit(image_16, position)
-   if lista_main[i][j] == 32:
-      screen.blit(image_32, position)
-   if lista_main[i][j] == 64:
-      screen.blit(image_64, position)
-   if lista_main[i][j] == 128:
-      screen.blit(image_128, position)
-   if lista_main[i][j] == 256:
-      screen.blit(image_256, position)
-   if lista_main[i][j] == 512:
-      screen.blit(image_512, position)
-   if lista_main[i][j] == 1024:
-      screen.blit(image_1024, position)
-   if lista_main[i][j] == 2048:
-      screen.blit(image_2048, position)
-      screen.blit(image_win, (0, 100))
-
-
 def first_block(lista):
    #draw first block
    x=random.choice([0,100,200])
@@ -224,6 +255,8 @@ def first_block(lista):
             if y == 300 and j == 2:
                if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
                   lista[j][n] = 2
+
+
 
 ##GAME
 def main():
@@ -255,10 +288,7 @@ def main():
    text_time = font_size1.render("Czas: ", 1, (250, 250, 250), None)
    text_score = font_size1.render("Punktacja: ", 1, (250, 250, 250), None)
 
-
-
-
-
+   #safe first block
    first_block(lista_main)
 
 
@@ -296,7 +326,7 @@ def main():
                ##ARROW - RIGHT
 
             ##moving blocks
-               arrow_right(lista_main)
+               arrow_right(lista_main,screen)
                if safe != lista_main:
                   move = 1
             ##join blocks
@@ -308,14 +338,14 @@ def main():
                         points += lista_main[i][j]
                         move = 1
             ##repeat moving blocks
-               arrow_right(lista_main)
+               arrow_right(lista_main, screen)
 
             if event.key == pygame.K_LEFT:
 
                ##ARROW - LEFT
 
             ##moving blocks
-               arrow_left(lista_main)
+               arrow_left(lista_main,screen)
                if safe != lista_main:
                   move = 1
             ##join blocks
@@ -327,7 +357,7 @@ def main():
                         points += lista_main[i][j]
                         move = 1
             ##repeat moving blocks
-               arrow_left(lista_main)
+               arrow_left(lista_main,screen)
 
             if event.key == pygame.K_UP:
 
@@ -353,7 +383,7 @@ def main():
                ##ARROW - DOWN
 
             ##moving blocks
-               arrow_down(lista_main)
+               arrow_down(lista_main,screen)
                if safe != lista_main:
                   move = 1
             ##join blocks
@@ -365,7 +395,7 @@ def main():
                         points += lista_main[j][i]
                         move = 1
             ##repeat moving blocks
-               arrow_down(lista_main)
+               arrow_down(lista_main,screen)
 
             #creating new blocks
             if (event.key == pygame.K_LEFT or  event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
