@@ -27,7 +27,7 @@ image_lose = pygame.image.load(os.path.join("Number", "Przegrales.jpg"))
 image_win = pygame.image.load(os.path.join("Number", "Wygrales.jpg"))
 
 # data
-FPS = 150
+FPS = 250
 fpsClock = pygame.time.Clock()
 
 
@@ -172,6 +172,50 @@ def animation_arrow_RIGHT(k, i, j, lista, screen, points):
         load_screen(screen, points, lista, i, k)
 
 
+def join_block_RIGHT(lista, screen, points):
+    for i in range(3):
+        for j in range(2, 0, -1):
+            if lista[i][j] != 0 and lista[i][j] == lista[i][j - 1]:
+                animation_arrow_RIGHT(j - 1, i, j, lista, screen, points)
+                lista[i][j] += lista[i][j - 1]
+                lista[i][j - 1] = 0
+                points += lista[i][j]
+    return points
+
+
+def join_block_LEFT(lista, screen, points):
+    for i in range(3):
+        for j in range(2):
+            if lista[i][j] != 0 and lista[i][j] == lista[i][j + 1]:
+                animation_arrow_LEFT(j + 1, i, j, lista, screen, points)
+                lista[i][j] += lista[i][j + 1]
+                lista[i][j + 1] = 0
+                points += lista[i][j]
+    return points
+
+
+def join_block_UP(lista, screen, points):
+    for i in range(3):
+        for j in range(2):
+            if lista[j][i] != 0 and lista[j][i] == lista[j + 1][i]:
+                animation_arrow_UP(j + 1, i, j, lista, screen, points)
+                lista[j][i] += lista[j + 1][i]
+                lista[j + 1][i] = 0
+                points += lista[j][i]
+    return points
+
+
+def join_block_DOWN(lista, screen, points):
+    for i in range(3):
+        for j in range(2, 0, -1):
+            if lista[j][i] != 0 and lista[j][i] == lista[j - 1][i]:
+                animation_arrow_DOWN(j - 1, i, j, lista, screen, points)
+                lista[j][i] += lista[j - 1][i]
+                lista[j - 1][i] = 0
+                points += lista[j][i]
+    return points
+
+
 # ARROW
 def arrow_up(lista, screen, points):
     for i in range(3):
@@ -226,7 +270,15 @@ def arrow_left(lista, screen, points):
 
 
 ############################
+def checking_move(safe, lista, move):
+    if safe != lista:
+        move = 1
+    return move
+
+
 def checking_position(i, j):
+    x = 0
+    y = 0
     if i == 0 and j == 0:
         x = 0
         y = 100
@@ -308,6 +360,7 @@ def main():
     copy_score = ''
     safe = []
     points = 0
+    q = 0
     lista1 = [0, 0, 0]
     lista2 = [0, 0, 0]
     lista3 = [0, 0, 0]
@@ -327,139 +380,122 @@ def main():
 
     # PLAY UNTIL EXIT
     while True:
-        load_screen(screen, points, lista_main, 4, 4)
+        while q != 1:
+            load_screen(screen, points, lista_main, 4, 4)
 
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    q = 1
+                    sys.exit()
+                if event.type == KEYDOWN:
+                    if event.key != pygame.K_u:
+                        safe = []
+                        for i in range(3):
+                            for j in range(3):
+                                copy.append(lista_main[i][j])
+                            safe += [copy]
+                            copy = []
+                        copy_score = points
+                if event.type == KEYUP:
+                    if event.key == pygame.K_u and safe != []:
+                        lista_main = safe
+                        points = copy_score
+                        screen.fill(grey)
+                        DrawBoard(0, width, 0, screen, black, 199)
+                    if event.key == pygame.K_RIGHT:
+                        # ARROW - RIGHT
+
+                        # moving blocks
+                        arrow_right(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # join blocks
+                        join_block_RIGHT(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # repeat moving blocks
+                        arrow_right(lista_main, screen, points)
+
+                    if event.key == pygame.K_LEFT:
+                        # ARROW - LEFT
+
+                        # moving blocks
+                        arrow_left(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # join blocks
+                        join_block_LEFT(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # repeat moving blocks
+                        arrow_left(lista_main, screen, points)
+
+                    if event.key == pygame.K_UP:
+                        # ARROW - UP
+
+                        # moving blocks
+                        arrow_up(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # join blocks
+                        join_block_UP(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # repeat moving blocks
+                        arrow_up(lista_main, screen, points)
+
+                    if event.key == pygame.K_DOWN:
+                        # ARROW - DOWN
+
+                        # moving blocks
+                        arrow_down(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # join blocks
+                        join_block_DOWN(lista_main, screen, points)
+                        move = checking_move(safe, lista_main, move)
+                        # repeat moving blocks
+                        arrow_down(lista_main, screen, points)
+
+                    # creating new blocks
+                    if (
+                            event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
+
+                        while exit == 0:
+                            x = random.choice([0, 100, 200])
+                            y = random.choice([100, 200, 300])
+                            for j in range(0, 3, 1):
+                                for n in range(len(lista_main)):
+                                    if lista_main[j][n] == 0:
+                                        if (y == 100 and j == 0) or (y == 200 and j == 1) or (y == 300 and j == 2):
+                                            if y == 100 and j == 0:
+                                                if (x == 0 and n == 0) or (x == 100 and n == 1) or (
+                                                        x == 200 and n == 2):
+                                                    lista_main[j][n] = 2
+                                                    exit = 1
+                                                    move = 0
+                                            if y == 200 and j == 1:
+                                                if (x == 0 and n == 0) or (x == 100 and n == 1) or (
+                                                        x == 200 and n == 2):
+                                                    lista_main[j][n] = 2
+                                                    exit = 1
+                                                    move = 0
+                                            if y == 300 and j == 2:
+                                                if (x == 0 and n == 0) or (x == 100 and n == 1) or (
+                                                        x == 200 and n == 2):
+                                                    lista_main[j][n] = 2
+                                                    exit = 1
+                                                    move = 0
+
+                        #  reset screen and loading again
+                        exit = 0
+
+                if END(lista_main):
+                    q = 1
+                    screen.blit(image_lose, (1, 100))
+
+            pygame.display.update()
+
+        screen.blit(image_lose, (1, 100))
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                q = 1
                 sys.exit()
-            if event.type == KEYDOWN:
-                if event.key != pygame.K_u:
-                    safe = []
-                    for i in range(3):
-                        for j in range(3):
-                            copy.append(lista_main[i][j])
-                        safe += [copy]
-                        copy = []
-                    copy_score = points
-            if event.type == KEYUP:
-                if event.key == pygame.K_u and safe != []:
-                    lista_main = safe
-                    points = copy_score
-                    screen.fill(grey)
-                    DrawBoard(0, width, 0, screen, black, 199)
-                if event.key == pygame.K_RIGHT:
 
-                    # ARROW - RIGHT
-
-                    # moving blocks
-                    arrow_right(lista_main, screen, points)
-                    if safe != lista_main:
-                        move = 1
-                    # join blocks
-                    for i in range(3):
-                        for j in range(2, 0, -1):
-                            if lista_main[i][j] != 0 and lista_main[i][j] == lista_main[i][j - 1]:
-                                lista_main[i][j] += lista_main[i][j - 1]
-                                lista_main[i][j - 1] = 0
-                                points += lista_main[i][j]
-                                move = 1
-
-                    # repeat moving blocks
-                    arrow_right(lista_main, screen, points)
-
-                if event.key == pygame.K_LEFT:
-
-                    # ARROW - LEFT
-
-                    # moving blocks
-                    arrow_left(lista_main, screen, points)
-                    if safe != lista_main:
-                        move = 1
-                    # join blocks
-                    for i in range(3):
-                        for j in range(2):
-                            if lista_main[i][j] != 0 and lista_main[i][j] == lista_main[i][j + 1]:
-                                lista_main[i][j] += lista_main[i][j + 1]
-                                lista_main[i][j + 1] = 0
-                                points += lista_main[i][j]
-                                move = 1
-                    # repeat moving blocks
-                    arrow_left(lista_main, screen, points)
-
-                if event.key == pygame.K_UP:
-
-                    # ARROW - UP
-
-                    # moving blocks
-                    arrow_up(lista_main, screen, points)
-                    if safe != lista_main:
-                        move = 1
-                    # join blocks
-                    for i in range(3):
-                        for j in range(2):
-                            if lista_main[j][i] != 0 and lista_main[j][i] == lista_main[j + 1][i]:
-                                lista_main[j][i] += lista_main[j + 1][i]
-                                lista_main[j + 1][i] = 0
-                                points += lista_main[j][i]
-                                move = 1
-                    # repeat moving blocks
-                    arrow_up(lista_main, screen, points)
-
-                if event.key == pygame.K_DOWN:
-
-                    # ARROW - DOWN
-
-                    # moving blocks
-                    arrow_down(lista_main, screen, points)
-                    if safe != lista_main:
-                        move = 1
-                    # join blocks
-                    for i in range(3):
-                        for j in range(2, 0, -1):
-                            if lista_main[j][i] != 0 and lista_main[j][i] == lista_main[j - 1][i]:
-                                lista_main[j][i] += lista_main[j - 1][i]
-                                lista_main[j - 1][i] = 0
-                                points += lista_main[j][i]
-                                move = 1
-                    # repeat moving blocks
-                    arrow_down(lista_main, screen, points)
-
-                # creating new blocks
-                if (
-                        event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
-
-                    while exit == 0:
-                        x = random.choice([0, 100, 200])
-                        y = random.choice([100, 200, 300])
-                        for j in range(0, 3, 1):
-                            for n in range(len(lista_main)):
-                                if lista_main[j][n] == 0:
-                                    if (y == 100 and j == 0) or (y == 200 and j == 1) or (y == 300 and j == 2):
-                                        if y == 100 and j == 0:
-                                            if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
-                                                lista_main[j][n] = 2
-                                                exit = 1
-                                                move = 0
-                                        if y == 200 and j == 1:
-                                            if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
-                                                lista_main[j][n] = 2
-                                                exit = 1
-                                                move = 0
-                                        if y == 300 and j == 2:
-                                            if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
-                                                lista_main[j][n] = 2
-                                                exit = 1
-                                                move = 0
-
-                    #  reset screen and loading again
-                    screen.fill(grey)
-                    exit = 0
-
-            if END(lista_main):
-                screen.blit(image_lose, (1, 100))
-
-        pygame.display.update()
+    # call function
 
 
-# call function
 main()
