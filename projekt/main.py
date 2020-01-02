@@ -3,8 +3,9 @@ import random
 import pygame
 import sys
 from pygame.locals import *
+import linecache
 
-global str
+
 
 # color
 grey = (0x99, 0x99, 0x99)
@@ -354,6 +355,45 @@ def first_block(lista):
                         lista[j][n] = 2
 
 
+def sort(lista):
+    if lista:
+        for i in range(len(lista)):
+            if i + 1 < len(lista):
+                if lista[i]['punktacja'] < lista[i + 1]['punktacja']:
+                    lista[i], lista[i + 1] = lista[i + 1], lista[i]
+    return lista
+
+
+def safe_in_file(lista):
+    file = open('ranking.txt')
+    x = file.read().split(', ')
+    lista1 = write_data_from_file(len(x)-1, x, lista)
+    sort(lista1)
+    file = open('ranking.txt', 'w')
+    if lista1:
+        for i in range(len(lista1)):
+            file.write(", " + lista[i]['nick'] + ", " + str(lista[i]['punktacja']))
+        file.close()
+    else:
+        file.write(", " + lista[0]['nick'] + ", " + str(lista[0]['punktacja']))
+        file.close()
+
+
+
+
+def write_data_from_file(n, x, lista):
+    słownik = {'nick' : '', 'punktacja' : 0}
+    if n <= 1:
+        return
+    else:
+        if (n-2)%2 == 0:
+            słownik['nick'] = x[n-1]
+        if (n-1)%2 == 1:
+            słownik['punktacja'] = int(x[(n)])
+        lista.append(słownik)
+        write_data_from_file(n - 2, x, lista)
+        return lista
+
 # GAME
 def main():
     # useful data
@@ -398,7 +438,9 @@ def main():
             while enter != 1:
                 for event in pygame.event.get():
                     if event.type == KEYDOWN:
-                        if event.key == event.key == pygame.K_ESCAPE:
+                        if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                            sys.exit()
+                        if event.key == event.key == pygame.K_KP_ENTER:
                             enter = 1
                             ranking['nick'] = name
                         if event.key == pygame.K_q:
@@ -505,10 +547,47 @@ def main():
                             letter = 'm'
                             x += 10
                             name += 'm'
+                        if event.key == pygame.K_1:
+                            letter = '1'
+                            x += 10
+                            name += '1'
+                        if event.key == pygame.K_2:
+                            letter = '2'
+                            x += 10
+                            name += '2'
+                        if event.key == pygame.K_3:
+                            letter = '3'
+                            x += 10
+                            name += '3'
+                        if event.key == pygame.K_4:
+                            letter = '4'
+                            x += 10
+                            name += '4'
+                        if event.key == pygame.K_5:
+                            letter = '5'
+                            x += 10
+                            name += '5'
+                        if event.key == pygame.K_6:
+                            letter = '6'
+                            x += 10
+                            name += '6'
+                        if event.key == pygame.K_7:
+                            letter = '7'
+                            x += 10
+                            name += '7'
+                        if event.key == pygame.K_8:
+                            letter = '8'
+                            x += 10
+                            name += '8'
+                        if event.key == pygame.K_9:
+                            letter = '9'
+                            x += 10
+                            name += '9'
                         if event.key == pygame.K_SPACE:
                             letter = ' '
                             x += 10
-                            name += 'm'
+                            name += ' '
+
 
                 font = pygame.font.SysFont('arial', 18)
                 letter_print = font.render(letter, 1, (250, 250, 250), None)
@@ -533,6 +612,11 @@ def main():
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                        ranking['punktacja'] = points
+                        lista_ranking.append(ranking)
+                        #safe data
+                        safe_in_file(lista_ranking)
+
                         q = 1
                         sys.exit()
                     if event.type == KEYDOWN:
@@ -593,6 +677,7 @@ def main():
                             # ARROW - DOWN
 
                             # moving blocks
+
                             arrow_down(lista_main, screen, points)
                             move = checking_move(safe, lista_main, move)
                             # join blocks
@@ -637,7 +722,6 @@ def main():
                 pygame.display.update()
             ranking['punktacja'] = points
             lista_ranking.append(ranking)
-            print(lista_ranking)
 
         if n == 0:
             screen.blit(image_lose, (1, 100))
