@@ -5,8 +5,6 @@ import sys
 from pygame.locals import *
 import linecache
 
-
-
 # color
 grey = (0x99, 0x99, 0x99)
 black = (0x00, 0x00, 0x00)
@@ -367,7 +365,7 @@ def sort(lista):
 def safe_in_file(lista):
     file = open('ranking.txt')
     x = file.read().split(', ')
-    lista1 = write_data_from_file(len(x)-1, x, lista)
+    lista1 = write_data_from_file(len(x) - 1, x, lista)
     sort(lista1)
     file = open('ranking.txt', 'w')
     if lista1:
@@ -379,20 +377,19 @@ def safe_in_file(lista):
         file.close()
 
 
-
-
 def write_data_from_file(n, x, lista):
-    słownik = {'nick' : '', 'punktacja' : 0}
+    slownik = {'nick': '', 'punktacja': 0}
     if n <= 1:
         return
     else:
-        if (n-2)%2 == 0:
-            słownik['nick'] = x[n-1]
-        if (n-1)%2 == 1:
-            słownik['punktacja'] = int(x[(n)])
-        lista.append(słownik)
+        if (n - 2) % 2 == 0:
+            slownik['nick'] = x[n - 1]
+        if (n - 1) % 2 == 1:
+            slownik['punktacja'] = int(x[n])
+        lista.append(slownik)
         write_data_from_file(n - 2, x, lista)
         return lista
+
 
 # GAME
 def main():
@@ -431,6 +428,7 @@ def main():
             lista2 = [0, 0, 0]
             lista3 = [0, 0, 0]
             lista_main = [lista1, lista2, lista3]
+            lista_ranking = []
             n = 0
             enter = 0
 
@@ -588,7 +586,6 @@ def main():
                             x += 10
                             name += ' '
 
-
                 font = pygame.font.SysFont('arial', 18)
                 letter_print = font.render(letter, 1, (250, 250, 250), None)
                 nick = font.render('Nick: ', 1, (250, 250, 250), None)
@@ -599,6 +596,20 @@ def main():
                 if letter == 'm' or letter == 'w':
                     x += 5
                 letter = ''
+
+                file = open('ranking.txt')
+                file_open = file.read().split(', ')
+                y = 110
+                point = 0
+                for i in range(1, len(file_open), 2):
+                    if i <= 20:
+                        y += 20
+                        point += 1
+                        person = font.render(str(point) + "." + file_open[i] + " , score: " + file_open[i + 1], 1,
+                                             (250, 250, 250), None)
+                        screen.blit(person, (10, y))
+                file.close()
+
                 pygame.display.update()
 
             # safe first block
@@ -614,13 +625,18 @@ def main():
                     if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                         ranking['punktacja'] = points
                         lista_ranking.append(ranking)
-                        #safe data
+                        # safe data
                         safe_in_file(lista_ranking)
 
                         q = 1
                         sys.exit()
                     if event.type == KEYDOWN:
                         if event.key == pygame.K_n:
+                            ranking['punktacja'] = points
+                            lista_ranking.append(ranking)
+                            # safe data
+                            safe_in_file(lista_ranking)
+
                             n = 1
                         if event.key != pygame.K_u:
                             safe = []
@@ -720,8 +736,7 @@ def main():
                             exit = 0
 
                 pygame.display.update()
-            ranking['punktacja'] = points
-            lista_ranking.append(ranking)
+            # safe data
 
         if n == 0:
             screen.blit(image_lose, (1, 100))
