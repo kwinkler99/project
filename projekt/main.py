@@ -396,7 +396,6 @@ def main():
     # useful data
     letter = ''
     (width, height) = (300, 400)
-    lista_ranking = []
     exit = 0
     move = 0
     q = 0
@@ -627,7 +626,6 @@ def main():
                         lista_ranking.append(ranking)
                         # safe data
                         safe_in_file(lista_ranking)
-
                         q = 1
                         sys.exit()
                     if event.type == KEYDOWN:
@@ -636,7 +634,6 @@ def main():
                             lista_ranking.append(ranking)
                             # safe data
                             safe_in_file(lista_ranking)
-
                             n = 1
                         if event.key != pygame.K_u:
                             safe = []
@@ -736,7 +733,6 @@ def main():
                             exit = 0
 
                 pygame.display.update()
-            # safe data
 
         if n == 0:
             screen.blit(image_lose, (1, 100))
