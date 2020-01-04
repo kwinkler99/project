@@ -3,7 +3,6 @@ import random
 import pygame
 import sys
 from pygame.locals import *
-import linecache
 
 # color
 grey = (0x99, 0x99, 0x99)
@@ -36,26 +35,13 @@ def DrawBoard(x, y, height, screen, color, line):
     pygame.draw.lines(screen, color, False, [(x, height), (y, height)], line)
 
 
-# function ending game
-def END(lista):
-    help = 0
-    n = 0
-    for k in range(3):
-        for h in range(3):
-            if lista[k][h] != 0:
-                n += 1
-    if n == 9:
-        for i in range(2):
-            for j in range(2):
-                if lista[i][j] != lista[i][j + 1] and lista[i][j] != lista[i + 1][j]:
-                    help += 1
-            if lista[2][i] != lista[2][i + 1]:
-                help += 1
-            if lista[i][2] != lista[i + 1][2]:
-                help += 1
-
-        if help == 8:
-            return True
+# LOAD SCREEN
+def load_screen_ranking(screen, letter, x):
+    font = pygame.font.SysFont('arial', 18)
+    letter_print = font.render(letter, 1, (250, 250, 250), None)
+    nick = font.render('Nick: ', 1, (250, 250, 250), None)
+    screen.blit(nick, (10, 10))
+    screen.blit(letter_print, (x, 10))
 
 
 def load_screen(screen, points, lista, movex, movey):
@@ -83,6 +69,39 @@ def load_screen(screen, points, lista, movex, movey):
                 image(lista, screen, i, j)
 
 
+def score(screen, points):
+    font = pygame.font.SysFont('arial', 18)
+    screen.blit(font.render(str(points), 1, (255, 255, 255)), (100, 60))
+
+
+def time(screen):
+    font = pygame.font.SysFont('arial', 18)
+    if (pygame.time.get_ticks() // 1000) % 60 < 10:
+        time = font.render(
+            str((pygame.time.get_ticks() // 1000) // 60) + ':' + '0' + str((pygame.time.get_ticks() // 1000) % 60), 1, (250, 250, 250))
+    else:
+        time = font.render(
+            str((pygame.time.get_ticks() // 1000) // 60) + ':' + str((pygame.time.get_ticks() // 1000) % 60), 1, (250, 250, 250))
+
+    screen.blit(time, (60, 80))
+
+
+def display_the_ranking(screen):
+    font = pygame.font.SysFont('arial', 18)
+    file = open('ranking.txt')
+    file_open = file.read().split(', ')
+    y = 110
+    point = 0
+    for i in range(1, len(file_open), 2):
+        if i <= 20:
+            y += 20
+            point += 1
+            person = font.render(str(point) + "." + file_open[i] + " , score: " + file_open[i + 1], 1, (250, 250, 250), None)
+            screen.blit(person, (10, y))
+    file.close()
+
+
+# IMAGE
 def image(lista_main, screen, i, j):
     position = checking_position(i, j)
 
@@ -139,86 +158,6 @@ def image_for_the_arrows(i, k, x, y, screen, lista):
     fpsClock.tick(FPS)
 
 
-def animation_arrow_UP(k, i, j, lista, screen, points):
-    (x, y) = checking_position(k, i)
-    z = y
-    while y != z - (k - j) * 100:
-        y -= 5
-        image_for_the_arrows(i, k, x, y, screen, lista)
-        load_screen(screen, points, lista, k, i)
-
-
-def animation_arrow_DOWN(k, i, j, lista, screen, points):
-    (x, y) = checking_position(k, i)
-    z = y
-    while y != z + (j - k) * 100:
-        y += 5
-        image_for_the_arrows(i, k, x, y, screen, lista)
-        load_screen(screen, points, lista, k, i)
-
-
-def animation_arrow_LEFT(k, i, j, lista, screen, points):
-    (x, y) = checking_position(i, k)
-    z = x
-    while x != z - (k - j) * 100:
-        x -= 5
-        image_for_the_arrows(k, i, x, y, screen, lista)
-        load_screen(screen, points, lista, i, k)
-
-
-def animation_arrow_RIGHT(k, i, j, lista, screen, points):
-    (x, y) = checking_position(i, k)
-    z = x
-    while x != z - (k - j) * 100:
-        x += 5
-        image_for_the_arrows(k, i, x, y, screen, lista)
-        load_screen(screen, points, lista, i, k)
-
-
-def join_block_RIGHT(lista, screen, points):
-    for i in range(3):
-        for j in range(2, 0, -1):
-            if lista[i][j] != 0 and lista[i][j] == lista[i][j - 1]:
-                animation_arrow_RIGHT(j - 1, i, j, lista, screen, points)
-                lista[i][j] += lista[i][j - 1]
-                lista[i][j - 1] = 0
-                points += lista[i][j]
-    return points
-
-
-def join_block_LEFT(lista, screen, points):
-    for i in range(3):
-        for j in range(2):
-            if lista[i][j] != 0 and lista[i][j] == lista[i][j + 1]:
-                animation_arrow_LEFT(j + 1, i, j, lista, screen, points)
-                lista[i][j] += lista[i][j + 1]
-                lista[i][j + 1] = 0
-                points += lista[i][j]
-    return points
-
-
-def join_block_UP(lista, screen, points):
-    for i in range(3):
-        for j in range(2):
-            if lista[j][i] != 0 and lista[j][i] == lista[j + 1][i]:
-                animation_arrow_UP(j + 1, i, j, lista, screen, points)
-                lista[j][i] += lista[j + 1][i]
-                lista[j + 1][i] = 0
-                points += lista[j][i]
-    return points
-
-
-def join_block_DOWN(lista, screen, points):
-    for i in range(3):
-        for j in range(2, 0, -1):
-            if lista[j][i] != 0 and lista[j][i] == lista[j - 1][i]:
-                animation_arrow_DOWN(j - 1, i, j, lista, screen, points)
-                lista[j][i] += lista[j - 1][i]
-                lista[j - 1][i] = 0
-                points += lista[j][i]
-    return points
-
-
 # ARROW
 def arrow_up(lista, screen, points):
     for i in range(3):
@@ -272,7 +211,87 @@ def arrow_left(lista, screen, points):
     return lista
 
 
-############################
+def join_block_UP(lista, screen, points):
+    for i in range(3):
+        for j in range(2):
+            if lista[j][i] != 0 and lista[j][i] == lista[j + 1][i]:
+                animation_arrow_UP(j + 1, i, j, lista, screen, points)
+                lista[j][i] += lista[j + 1][i]
+                lista[j + 1][i] = 0
+                points += lista[j][i]
+    return points
+
+
+def join_block_DOWN(lista, screen, points):
+    for i in range(3):
+        for j in range(2, 0, -1):
+            if lista[j][i] != 0 and lista[j][i] == lista[j - 1][i]:
+                animation_arrow_DOWN(j - 1, i, j, lista, screen, points)
+                lista[j][i] += lista[j - 1][i]
+                lista[j - 1][i] = 0
+                points += lista[j][i]
+    return points
+
+
+def join_block_RIGHT(lista, screen, points):
+    for i in range(3):
+        for j in range(2, 0, -1):
+            if lista[i][j] != 0 and lista[i][j] == lista[i][j - 1]:
+                animation_arrow_RIGHT(j - 1, i, j, lista, screen, points)
+                lista[i][j] += lista[i][j - 1]
+                lista[i][j - 1] = 0
+                points += lista[i][j]
+    return points
+
+
+def join_block_LEFT(lista, screen, points):
+    for i in range(3):
+        for j in range(2):
+            if lista[i][j] != 0 and lista[i][j] == lista[i][j + 1]:
+                animation_arrow_LEFT(j + 1, i, j, lista, screen, points)
+                lista[i][j] += lista[i][j + 1]
+                lista[i][j + 1] = 0
+                points += lista[i][j]
+    return points
+
+
+def animation_arrow_UP(k, i, j, lista, screen, points):
+    (x, y) = checking_position(k, i)
+    z = y
+    while y != z - (k - j) * 100:
+        y -= 5
+        image_for_the_arrows(i, k, x, y, screen, lista)
+        load_screen(screen, points, lista, k, i)
+
+
+def animation_arrow_DOWN(k, i, j, lista, screen, points):
+    (x, y) = checking_position(k, i)
+    z = y
+    while y != z + (j - k) * 100:
+        y += 5
+        image_for_the_arrows(i, k, x, y, screen, lista)
+        load_screen(screen, points, lista, k, i)
+
+
+def animation_arrow_RIGHT(k, i, j, lista, screen, points):
+    (x, y) = checking_position(i, k)
+    z = x
+    while x != z - (k - j) * 100:
+        x += 5
+        image_for_the_arrows(k, i, x, y, screen, lista)
+        load_screen(screen, points, lista, i, k)
+
+
+def animation_arrow_LEFT(k, i, j, lista, screen, points):
+    (x, y) = checking_position(i, k)
+    z = x
+    while x != z - (k - j) * 100:
+        x -= 5
+        image_for_the_arrows(k, i, x, y, screen, lista)
+        load_screen(screen, points, lista, i, k)
+
+
+# POSITION AND MOVE
 def checking_move(safe, lista, move):
     if safe != lista:
         move = 1
@@ -282,83 +301,59 @@ def checking_move(safe, lista, move):
 def checking_position(i, j):
     x = 0
     y = 0
-    if i == 0 and j == 0:
-        x = 0
+    if i == 0:
         y = 100
-    elif i == 0 and j == 1:
-        x = 100
-        y = 100
-    elif i == 0 and j == 2:
-        x = 200
-        y = 100
+        x = position_x(j)
 
-    elif i == 1 and j == 0:
-        x = 0
+    elif i == 1:
         y = 200
-    elif i == 1 and j == 1:
-        x = 100
-        y = 200
-    elif i == 1 and j == 2:
-        x = 200
-        y = 200
+        x = position_x(j)
 
-    elif i == 2 and j == 0:
-        x = 0
+    elif i == 2:
         y = 300
-    elif i == 2 and j == 1:
-        x = 100
-        y = 300
-    elif i == 2 and j == 2:
-        x = 200
-        y = 300
+        x = position_x(j)
     return x, y
 
 
-def score(screen, points):
-    font = pygame.font.SysFont('arial', 18)
-    screen.blit(font.render(str(points), 1, (255, 255, 255)), (100, 60))
+def position_x(j):
+    if j == 0:
+        x = 0
+        return x
+    elif j == 1:
+        x = 100
+        return x
+    elif j == 2:
+        x = 200
+        return x
 
 
-def time(screen):
-    font = pygame.font.SysFont('arial', 18)
-    if (pygame.time.get_ticks() // 1000) % 60 < 10:
-        time = font.render(
-            str((pygame.time.get_ticks() // 1000) // 60) + ':' + '0' + str((pygame.time.get_ticks() // 1000) % 60), 1,
-            (250, 250, 250))
-    else:
-        time = font.render(
-            str((pygame.time.get_ticks() // 1000) // 60) + ':' + str((pygame.time.get_ticks() // 1000) % 60), 1,
-            (250, 250, 250))
-
-    screen.blit(time, (60, 80))
-
-
+# SAFE BLOCKS IN MATRIX
 def first_block(lista):
     # draw first block
-    x = random.choice([0, 100, 200])
-    y = random.choice([100, 200, 300])
+    (x, y) = random_point()
 
     # safe first block to the list
     for j in range(0, 3, 1):
         for n in range(len(lista[j])):
             if (y == 100 and j == 0) or (y == 200 and j == 1) or (y == 300 and j == 2):
-                if y == 100 and j == 0:
-                    if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
-                        lista[j][n] = 2
-                if y == 200 and j == 1:
-                    if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
-                        lista[j][n] = 2
-                if y == 300 and j == 2:
+                if y == 100 + 100 * j:
                     if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
                         lista[j][n] = 2
 
 
+def random_point():
+    x = random.choice([0, 100, 200])
+    y = random.choice([100, 200, 300])
+    return x, y
+
+
+# RANKING - SAFE, ADD(SORT), LOAD
 def sort(lista):
     if lista:
-        for i in range(len(lista)):
-            if i + 1 < len(lista):
-                if lista[i]['punktacja'] < lista[i + 1]['punktacja']:
-                    lista[i], lista[i + 1] = lista[i + 1], lista[i]
+        for i in range(len(lista) - 1, 0, -1):
+            for j in range(i):
+                if lista[j]['punktacja'] < lista[j + 1]['punktacja']:
+                    lista[j], lista[j + 1] = lista[j + 1], lista[j]
     return lista
 
 
@@ -391,6 +386,28 @@ def write_data_from_file(n, x, lista):
         return lista
 
 
+# function ending game
+def END(lista):
+    help = 0
+    n = 0
+    for k in range(3):
+        for h in range(3):
+            if lista[k][h] != 0:
+                n += 1
+    if n == 9:
+        for i in range(2):
+            for j in range(2):
+                if lista[i][j] != lista[i][j + 1] and lista[i][j] != lista[i + 1][j]:
+                    help += 1
+            if lista[2][i] != lista[2][i + 1]:
+                help += 1
+            if lista[i][2] != lista[i + 1][2]:
+                help += 1
+
+        if help == 8:
+            return True
+
+
 # GAME
 def main():
     # useful data
@@ -398,14 +415,12 @@ def main():
     (width, height) = (300, 400)
     exit = 0
     move = 0
+    w = 0
     q = 0
     n = 0
 
     # pygame init
     pygame.init()
-    screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption("Gra 2048")
-    screen.fill(grey)
 
     # screen settings
     screen = pygame.display.set_mode((width, height))
@@ -431,11 +446,12 @@ def main():
             n = 0
             enter = 0
 
-            # ranking
+            # ranking window
             while enter != 1:
                 for event in pygame.event.get():
                     if event.type == KEYDOWN:
                         if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                            q = 1
                             sys.exit()
                         if event.key == event.key == pygame.K_KP_ENTER:
                             enter = 1
@@ -585,35 +601,23 @@ def main():
                             x += 10
                             name += ' '
 
-                font = pygame.font.SysFont('arial', 18)
-                letter_print = font.render(letter, 1, (250, 250, 250), None)
-                nick = font.render('Nick: ', 1, (250, 250, 250), None)
-                screen.blit(nick, (10, 10))
-                screen.blit(letter_print, (x, 10))
+                DrawBoard(0, 50, 0, screen, black, 80)
+                DrawBoard(0, 300, 250, screen, grey, 300)
+                display_the_ranking(screen)
+                load_screen_ranking(screen, letter, x)
                 if letter == 'i' or letter == 'j' or letter == 'l' or letter == 't' or letter == 'f' or letter == 'r':
                     x -= 5
                 if letter == 'm' or letter == 'w':
                     x += 5
                 letter = ''
 
-                file = open('ranking.txt')
-                file_open = file.read().split(', ')
-                y = 110
-                point = 0
-                for i in range(1, len(file_open), 2):
-                    if i <= 20:
-                        y += 20
-                        point += 1
-                        person = font.render(str(point) + "." + file_open[i] + " , score: " + file_open[i + 1], 1,
-                                             (250, 250, 250), None)
-                        screen.blit(person, (10, y))
-                file.close()
-
                 pygame.display.update()
 
             # safe first block
             first_block(lista_main)
             load_screen(screen, points, lista_main, 4, 4)
+
+            # game window
             while n != 1:
                 load_screen(screen, points, lista_main, 4, 4)
                 if END(lista_main):
@@ -626,8 +630,7 @@ def main():
                         lista_ranking.append(ranking)
                         # safe data
                         safe_in_file(lista_ranking)
-                        q = 1
-                        sys.exit()
+                        n = 1
                     if event.type == KEYDOWN:
                         if event.key == pygame.K_n:
                             ranking['punktacja'] = points
@@ -690,7 +693,6 @@ def main():
                             # ARROW - DOWN
 
                             # moving blocks
-
                             arrow_down(lista_main, screen, points)
                             move = checking_move(safe, lista_main, move)
                             # join blocks
@@ -700,38 +702,32 @@ def main():
                             arrow_down(lista_main, screen, points)
 
                         # creating new blocks
-                        if (
-                                event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
-
+                        if (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
                             while exit == 0:
-                                x = random.choice([0, 100, 200])
-                                y = random.choice([100, 200, 300])
+                                (x, y) = random_point()
                                 for j in range(0, 3, 1):
                                     for n in range(len(lista_main)):
                                         if lista_main[j][n] == 0:
-                                            if (y == 100 and j == 0) or (y == 200 and j == 1) or (y == 300 and j == 2):
-                                                if y == 100 and j == 0:
-                                                    if (x == 0 and n == 0) or (x == 100 and n == 1) or (
-                                                            x == 200 and n == 2):
-                                                        lista_main[j][n] = 2
-                                                        exit = 1
-                                                        move = 0
-                                                if y == 200 and j == 1:
-                                                    if (x == 0 and n == 0) or (x == 100 and n == 1) or (
-                                                            x == 200 and n == 2):
-                                                        lista_main[j][n] = 2
-                                                        exit = 1
-                                                        move = 0
-                                                if y == 300 and j == 2:
-                                                    if (x == 0 and n == 0) or (x == 100 and n == 1) or (
-                                                            x == 200 and n == 2):
-                                                        lista_main[j][n] = 2
-                                                        exit = 1
-                                                        move = 0
-
-                            #  reset screen and loading again
+                                            if y == 100 + 100 * j:
+                                                if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
+                                                    lista_main[j][n] = 2
+                                                    exit = 1
+                                                    move = 0
                             exit = 0
 
+                pygame.display.update()
+            while w != 1:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                        w = 1
+                        q = 1
+                        sys.exit()
+                    if event.key == event.key == pygame.K_KP_ENTER:
+                        w = 1
+
+                screen.fill(grey)
+                DrawBoard(0, width, 0, screen, black, 199)
+                display_the_ranking(screen)
                 pygame.display.update()
 
         if n == 0:
