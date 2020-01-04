@@ -2,6 +2,7 @@ import os.path
 import random
 import pygame
 import sys
+import datetime
 from pygame.locals import *
 
 # color
@@ -78,10 +79,12 @@ def time(screen):
     font = pygame.font.SysFont('arial', 18)
     if (pygame.time.get_ticks() // 1000) % 60 < 10:
         time = font.render(
-            str((pygame.time.get_ticks() // 1000) // 60) + ':' + '0' + str((pygame.time.get_ticks() // 1000) % 60), 1, (250, 250, 250))
+            str((pygame.time.get_ticks() // 1000) // 60) + ':' + '0' + str((pygame.time.get_ticks() // 1000) % 60), 1,
+            (250, 250, 250))
     else:
         time = font.render(
-            str((pygame.time.get_ticks() // 1000) // 60) + ':' + str((pygame.time.get_ticks() // 1000) % 60), 1, (250, 250, 250))
+            str((pygame.time.get_ticks() // 1000) // 60) + ':' + str((pygame.time.get_ticks() // 1000) % 60), 1,
+            (250, 250, 250))
 
     screen.blit(time, (60, 80))
 
@@ -96,7 +99,8 @@ def display_the_ranking(screen):
         if i <= 20:
             y += 20
             point += 1
-            person = font.render(str(point) + "." + file_open[i] + " , score: " + file_open[i + 1], 1, (250, 250, 250), None)
+            person = font.render(str(point) + "." + file_open[i] + " , score: " + file_open[i + 1], 1, (250, 250, 250),
+                                 None)
             screen.blit(person, (10, y))
     file.close()
 
@@ -408,6 +412,20 @@ def END(lista):
             return True
 
 
+def small_data_base(nick, score):
+    general = {'day': '', 'month': '', 'hour': '', 'score': score}
+    person = {'nick': nick, 'general': general}
+    now = datetime.datetime.now()
+    general['hour'] = now.strftime("%H:%M")
+    general['day'] = now.strftime("%d")
+    general['month'] = now.strftime("%m")
+
+    file = open('data_base.txt', 'a')
+    file.write(" " + person['nick'] + " " + str(person['general']['day']) + " " + str(person['general']['month']) +
+               " " + str(person['general']['hour']) + " " + str(person['general']['score']))
+    file.close()
+
+
 # GAME
 def main():
     # useful data
@@ -630,6 +648,7 @@ def main():
                         lista_ranking.append(ranking)
                         # safe data
                         safe_in_file(lista_ranking)
+                        small_data_base(ranking['nick'], points)
                         n = 1
                     if event.type == KEYDOWN:
                         if event.key == pygame.K_n:
@@ -702,14 +721,16 @@ def main():
                             arrow_down(lista_main, screen, points)
 
                         # creating new blocks
-                        if (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
+                        if (
+                                event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == K_UP) and move == 1:
                             while exit == 0:
                                 (x, y) = random_point()
                                 for j in range(0, 3, 1):
                                     for n in range(len(lista_main)):
                                         if lista_main[j][n] == 0:
                                             if y == 100 + 100 * j:
-                                                if (x == 0 and n == 0) or (x == 100 and n == 1) or (x == 200 and n == 2):
+                                                if (x == 0 and n == 0) or (x == 100 and n == 1) or (
+                                                        x == 200 and n == 2):
                                                     lista_main[j][n] = 2
                                                     exit = 1
                                                     move = 0
