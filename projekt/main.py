@@ -47,6 +47,14 @@ def load_screen_ranking(screen, letter, x):
     screen.blit(letter_print, (x, 10))
 
 
+def load_screen_search(screen, letter, x):
+    font = pygame.font.SysFont('arial', 18)
+    info = font.render("Search: ", 1, (0, 0, 0), None)
+    letter_print = font.render(letter, 1, (0, 0, 0), None)
+    screen.blit(info, (10, 20))
+    screen.blit(letter_print, (x, 20))
+
+
 def load_screen(screen, points, lista, movex, movey):
     (width, height) = (300, 400)
     font_size = pygame.font.SysFont("dejavusans", 20)
@@ -463,8 +471,7 @@ def print_database(screen):
 
         point += 1
         y += 20
-    info = font.render("Search: ", 1, (250, 250, 250), None)
-    screen.blit(info, (10, 20))
+
 
 
 def load_database(n, x, lista):
@@ -805,6 +812,7 @@ def main():
 
                 pygame.display.update()
             while w != 1:
+                x = 70
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                         w = 1
@@ -814,14 +822,184 @@ def main():
                         if event.key == pygame.K_RETURN:
                             w = 1
                         if event.key == pygame.K_s:
+                            screen.fill(grey)
                             while q != 1:
                                 for event in pygame.event.get():
                                     if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                                         q = 1
                                         sys.exit()
-                                        
-                                screen.fill(grey)
+                                    if event.type == KEYDOWN:
+                                        if event.key == pygame.K_RETURN:
+
+
+
+
+
+
+
+                                            name = ''
+
+                                        if event.key == pygame.K_BACKSPACE:
+                                            name = ''
+                                            screen.fill(grey)
+                                            load_screen_search(screen, letter, x)
+                                            print_database(screen)
+                                        if event.key == pygame.K_q:
+                                            letter = 'q'
+                                            x += 10
+                                            name += 'q'
+                                        if event.key == pygame.K_w:
+                                            letter = 'w'
+                                            x += 10
+                                            name += 'w'
+                                        if event.key == pygame.K_e:
+                                            letter = 'e'
+                                            x += 10
+                                            name += 'e'
+                                        if event.key == pygame.K_r:
+                                            letter = 'r'
+                                            x += 10
+                                            name += 'r'
+                                        if event.key == pygame.K_t:
+                                            letter = 't'
+                                            x += 10
+                                            name += 't'
+                                        if event.key == pygame.K_y:
+                                            letter = 'y'
+                                            x += 10
+                                            name += 'y'
+                                        if event.key == pygame.K_u:
+                                            letter = 'u'
+                                            x += 10
+                                            name += 'u'
+                                        if event.key == pygame.K_i:
+                                            letter = 'i'
+                                            x += 10
+                                            name += 'i'
+                                        if event.key == pygame.K_o:
+                                            letter = 'o'
+                                            x += 10
+                                            name += 'o'
+                                        if event.key == pygame.K_p:
+                                            letter = 'p'
+                                            x += 10
+                                            name += 'p'
+                                        if event.key == pygame.K_a:
+                                            letter = 'a'
+                                            x += 10
+                                            name += 'a'
+                                        if event.key == pygame.K_s:
+                                            letter = 's'
+                                            x += 10
+                                            name += 's'
+                                        if event.key == pygame.K_d:
+                                            letter = 'd'
+                                            x += 10
+                                            name += 'd'
+                                        if event.key == pygame.K_f:
+                                            letter = 'f'
+                                            x += 10
+                                            name += 'f'
+                                        if event.key == pygame.K_g:
+                                            letter = 'g'
+                                            x += 10
+                                            name += 'g'
+                                        if event.key == pygame.K_h:
+                                            letter = 'h'
+                                            x += 10
+                                            name += 'h'
+                                        if event.key == pygame.K_j:
+                                            letter = 'j'
+                                            x += 10
+                                            name += 'j'
+                                        if event.key == pygame.K_k:
+                                            letter = 'k'
+                                            x += 10
+                                            name += 'k'
+                                        if event.key == pygame.K_l:
+                                            letter = 'l'
+                                            x += 10
+                                            name += 'l'
+                                        if event.key == pygame.K_z:
+                                            letter = 'z'
+                                            x += 10
+                                            name += 'z'
+                                        if event.key == pygame.K_x:
+                                            letter = 'x'
+                                            x += 10
+                                            name += 'x'
+                                        if event.key == pygame.K_c:
+                                            letter = 'c'
+                                            x += 10
+                                            name += 'c'
+                                        if event.key == pygame.K_v:
+                                            letter = 'v'
+                                            x += 10
+                                            name += 'v'
+                                        if event.key == pygame.K_b:
+                                            letter = 'b'
+                                            x += 10
+                                            name += 'b'
+                                        if event.key == pygame.K_n:
+                                            letter = 'n'
+                                            x += 10
+                                            name += 'n'
+                                        if event.key == pygame.K_m:
+                                            letter = 'm'
+                                            x += 10
+                                            name += 'm'
+                                        if event.key == pygame.K_1:
+                                            letter = '1'
+                                            x += 10
+                                            name += '1'
+                                        if event.key == pygame.K_2:
+                                            letter = '2'
+                                            x += 10
+                                            name += '2'
+                                        if event.key == pygame.K_3:
+                                            letter = '3'
+                                            x += 10
+                                            name += '3'
+                                        if event.key == pygame.K_4:
+                                            letter = '4'
+                                            x += 10
+                                            name += '4'
+                                        if event.key == pygame.K_5:
+                                            letter = '5'
+                                            x += 10
+                                            name += '5'
+                                        if event.key == pygame.K_6:
+                                            letter = '6'
+                                            x += 10
+                                            name += '6'
+                                        if event.key == pygame.K_7:
+                                            letter = '7'
+                                            x += 10
+                                            name += '7'
+                                        if event.key == pygame.K_8:
+                                            letter = '8'
+                                            x += 10
+                                            name += '8'
+                                        if event.key == pygame.K_9:
+                                            letter = '9'
+                                            x += 10
+                                            name += '9'
+                                        if event.key == pygame.K_SPACE:
+                                            letter = ' '
+                                            x += 10
+                                            name += ' '
+
+                                DrawBoard(0, 80, 0, screen, grey, 80)
+                                DrawBoard(0, 300, 230, screen, grey, 350)
+                                load_screen_search(screen, letter, x)
                                 print_database(screen)
+
+                                if letter == 'i' or letter == 'j' or letter == 'l' or letter == 't' or letter == 'f' or letter == 'r':
+                                    x -= 5
+                                if letter == 'm' or letter == 'w':
+                                    x += 5
+                                letter = ''
+
                                 pygame.display.update()
 
 
