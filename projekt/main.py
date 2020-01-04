@@ -10,7 +10,7 @@ grey = (0x99, 0x99, 0x99)
 black = (0x00, 0x00, 0x00)
 
 # text
-text = 'Gra 2048'
+text = 'Game 2048'
 
 # loading images
 image_2 = pygame.image.load(os.path.join("Number", "2.bmp"))
@@ -41,7 +41,9 @@ def load_screen_ranking(screen, letter, x):
     font = pygame.font.SysFont('arial', 18)
     letter_print = font.render(letter, 1, (250, 250, 250), None)
     nick = font.render('Nick: ', 1, (250, 250, 250), None)
+    accept = font.render('Enter - accept',1, (250, 250, 250), None)
     screen.blit(nick, (10, 10))
+    screen.blit(accept, (10, 50))
     screen.blit(letter_print, (x, 10))
 
 
@@ -50,15 +52,15 @@ def load_screen(screen, points, lista, movex, movey):
     font_size = pygame.font.SysFont("dejavusans", 20)
     font_size1 = pygame.font.SysFont('arial', 18)
     text_render = font_size.render(text, 1, (250, 250, 250), None)
-    text_map = font_size1.render("u - cofnięcie ruchu", 1, (250, 250, 250), None)
-    text_time = font_size1.render("Czas: ", 1, (250, 250, 250), None)
-    text_score = font_size1.render("Punktacja: ", 1, (250, 250, 250), None)
-    text_new_game = font_size1.render(", n - nowa gra", 1, (250, 250, 250), None)
+    text_map = font_size1.render("u - undo move", 1, (250, 250, 250), None)
+    text_time = font_size1.render("Time: ", 1, (250, 250, 250), None)
+    text_score = font_size1.render("Score: ", 1, (250, 250, 250), None)
+    text_new_game = font_size1.render(",  n - new game", 1, (250, 250, 250), None)
 
     screen.fill(grey)
     DrawBoard(0, width, 0, screen, black, 199)
     screen.blit(text_render, (width / 3, 10))
-    screen.blit(text_new_game, (160, 40))
+    screen.blit(text_new_game, (130, 40))
     screen.blit(text_map, (10, 40))
     screen.blit(text_score, (10, 60))
     screen.blit(text_time, (10, 80))
@@ -72,7 +74,7 @@ def load_screen(screen, points, lista, movex, movey):
 
 def score(screen, points):
     font = pygame.font.SysFont('arial', 18)
-    screen.blit(font.render(str(points), 1, (255, 255, 255)), (100, 60))
+    screen.blit(font.render(str(points), 1, (255, 255, 255)), (70, 60))
 
 
 def time(screen):
@@ -99,9 +101,10 @@ def display_the_ranking(screen):
         if i <= 20:
             y += 20
             point += 1
-            person = font.render(str(point) + "." + file_open[i] + " , score: " + file_open[i + 1], 1, (250, 250, 250),
-                                 None)
+            person = font.render(str(point) + "." + file_open[i], 1, (250, 250, 250), None)
+            person_score = font.render(", score: " + file_open[i + 1], 1, (250, 250, 250), None)
             screen.blit(person, (10, y))
+            screen.blit(person_score, (120 , y))
     file.close()
 
 
@@ -364,7 +367,7 @@ def sort(lista):
 def safe_in_file(lista):
     file = open('ranking.txt')
     x = file.read().split(', ')
-    lista1 = write_data_from_file(len(x) - 1, x, lista)
+    lista1 = load_data_from_file(len(x) - 1, x, lista)
     sort(lista1)
     file = open('ranking.txt', 'w')
     if lista1:
@@ -376,7 +379,7 @@ def safe_in_file(lista):
         file.close()
 
 
-def write_data_from_file(n, x, lista):
+def load_data_from_file(n, x, lista):
     slownik = {'nick': '', 'punktacja': 0}
     if n <= 1:
         return
@@ -386,7 +389,7 @@ def write_data_from_file(n, x, lista):
         if (n - 1) % 2 == 1:
             slownik['punktacja'] = int(x[n])
         lista.append(slownik)
-        write_data_from_file(n - 2, x, lista)
+        load_data_from_file(n - 2, x, lista)
         return lista
 
 
@@ -412,7 +415,8 @@ def END(lista):
             return True
 
 
-def small_data_base(nick, score):
+# DATABASES
+def small_database(nick, score):
     general = {'day': '', 'month': '', 'hour': '', 'score': score}
     person = {'nick': nick, 'general': general}
     now = datetime.datetime.now()
@@ -420,10 +424,70 @@ def small_data_base(nick, score):
     general['day'] = now.strftime("%d")
     general['month'] = now.strftime("%m")
 
-    file = open('data_base.txt', 'a')
-    file.write(" " + person['nick'] + " " + str(person['general']['day']) + " " + str(person['general']['month']) +
-               " " + str(person['general']['hour']) + " " + str(person['general']['score']))
+    file = open('database.txt', 'a')
+    file.write("," + person['nick'] + "," + str(person['general']['day']) + "," + str(person['general']['month']) +
+               "," + str(person['general']['hour']) + "," + str(person['general']['score']))
     file.close()
+
+
+def print_database(screen):
+    font = pygame.font.SysFont('arial', 18)
+    point = 1
+    y = 60
+    lista = []
+    file = open('database.txt')
+    x = file.read().split(',')
+    lista1 = load_database(len(x) - 1, x, lista)
+
+    for i in range(len(lista1)):
+        if lista[i]['general']['month'] < 10 and lista[i]['general']['day'] < 10:
+            person = font.render(str(point) + "." + lista1[i]['nick'], 1, (250, 250, 250), None)
+            person_generaly = font.render('date: ' + '0' + str(lista[i]['general']['day']) + '.' + '0' + str(lista[i]['general']['month']) + '  ' + lista[i]['general']['hour'] , 1, (250, 250, 250), None)
+            screen.blit(person, (5, y))
+            screen.blit(person_generaly, (120, y))
+        elif lista[i]['general']['month'] >= 10 and lista[i]['general']['day'] < 10:
+            person = font.render(str(point) + "." + lista1[i]['nick'], 1, (250, 250, 250), None)
+            person_generaly = font.render('date: ' + '0' + str(lista[i]['general']['day']) + '.' + str(lista[i]['general']['month']) + lista[i]['general']['hour'], 1, (250, 250, 250), None)
+            screen.blit(person, (5, y))
+            screen.blit(person_generaly, (120, y))
+        elif lista[i]['general']['month'] < 10 and lista[i]['general']['day'] >= 10:
+            person = font.render(str(point) + "." + lista1[i]['nick'], 1, (250, 250, 250), None)
+            person_generaly = font.render('date: ' + str(lista[i]['general']['day']) + '.' + '0' + str(lista[i]['general']['month']) + lista[i]['general']['hour'], 1, (250, 250, 250), None)
+            screen.blit(person, (5, y))
+            screen.blit(person_generaly, (120, y))
+        else:
+            person = font.render(str(point) + "." + lista1[i]['nick'], 1, (250, 250, 250), None)
+            person_generaly = font.render('date: ' + str(lista[i]['general']['day']) + '.' +  str(lista[i]['general']['month']) + lista[i]['general']['hour'] , 1, (250, 250, 250), None)
+            screen.blit(person, (5, y))
+            screen.blit(person_generaly, (120, y))
+
+        point += 1
+        y += 20
+    info = font.render("Search: ", 1, (250, 250, 250), None)
+    screen.blit(info, (10, 20))
+
+
+def load_database(n, x, lista):
+    general = {'day': '', 'month': '', 'hour': '', 'score': score}
+    person = {'nick': '', 'general': general}
+
+    if n <= 1:
+        return
+    else:
+        if (n - 5) % 5 == 0:
+            person['nick'] = x[n - 4]
+        if (n - 4) % 5 == 1:
+            person['general']['day'] = int(x[n - 3])
+        if (n - 3) % 5 == 2:
+            person['general']['month'] = int(x[n - 2])
+        if (n - 2) % 5 == 3:
+            person['general']['hour'] = x[n - 1]
+        if (n - 1) % 5 == 2:
+            person['general']['score'] = int(x[n])
+
+        lista.append(person)
+        load_database(n - 5, x, lista)
+        return lista
 
 
 # GAME
@@ -471,7 +535,7 @@ def main():
                         if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                             q = 1
                             sys.exit()
-                        if event.key == event.key == pygame.K_KP_ENTER:
+                        if event.key == event.key == pygame.K_RETURN:
                             enter = 1
                             ranking['nick'] = name
                         if event.key == pygame.K_q:
@@ -620,7 +684,10 @@ def main():
                             name += ' '
 
                 DrawBoard(0, 50, 0, screen, black, 80)
+                DrawBoard(0, 300, 50, screen, black, 40)
                 DrawBoard(0, 300, 250, screen, grey, 300)
+
+
                 display_the_ranking(screen)
                 load_screen_ranking(screen, letter, x)
                 if letter == 'i' or letter == 'j' or letter == 'l' or letter == 't' or letter == 'f' or letter == 'r':
@@ -648,7 +715,7 @@ def main():
                         lista_ranking.append(ranking)
                         # safe data
                         safe_in_file(lista_ranking)
-                        small_data_base(ranking['nick'], points)
+                        small_database(ranking['nick'], points)
                         n = 1
                     if event.type == KEYDOWN:
                         if event.key == pygame.K_n:
@@ -743,12 +810,35 @@ def main():
                         w = 1
                         q = 1
                         sys.exit()
-                    if event.key == event.key == pygame.K_KP_ENTER:
-                        w = 1
+                    if event.type == KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            w = 1
+                        if event.key == pygame.K_s:
+                            while q != 1:
+                                for event in pygame.event.get():
+                                    if event.type == pygame.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                                        q = 1
+                                        sys.exit()
+                                        
+                                screen.fill(grey)
+                                print_database(screen)
+                                pygame.display.update()
+
+
+
+
+
 
                 screen.fill(grey)
                 DrawBoard(0, width, 0, screen, black, 199)
                 display_the_ranking(screen)
+                font = pygame.font.SysFont('arial', 18)
+                accept = font.render('Enter - new game', 1, (250, 250, 250), None)
+                quit = font.render('ESC - quit', 1, (250, 250, 250), None)
+                search = font.render('s - search', 1, (250, 250, 250), None)
+                screen.blit(accept, (10, 10))
+                screen.blit(quit, (10, 40))
+                screen.blit(search, (10, 70))
                 pygame.display.update()
 
         if n == 0:
