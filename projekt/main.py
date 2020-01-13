@@ -139,6 +139,7 @@ def print_person_database(screen):
         condition_date_database(lista1, screen, i, point, y)
         point += 1
         y += 20
+    file.close()
 
 
 def condition_date_database(lista, screen, i, point, y):
@@ -652,6 +653,7 @@ def search_database(data, screen):
     x = file.read().split(',')
     search = load_database(len(x) - 1, x, lista)
     search_database_nick(data, search, screen)
+    file.close()
 
 
 def search_database_nick(data, search, screen):
